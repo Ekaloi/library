@@ -8,7 +8,7 @@ type Client struct {
 
 const baseURL string = "https://www.googleapis.com/books/v1/volumes"
 
-func NewClient() Client {
-	return Client{httpClient: http.Client{}}
+func NewClient() *Client {
+	return &Client{httpClient: http.Client{}}
 }
  

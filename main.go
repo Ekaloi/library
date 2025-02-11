@@ -1,27 +1,23 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"Github.com/Ekaloi/library/api"
+	"net/http"
+
+	"Github.com/Ekaloi/library/server"
 	"github.com/joho/godotenv"
 )
 
-func main(){
+func main() {
 	if err := godotenv.Load(); err != nil {
-        log.Fatal("Error loading .env file")
+		log.Fatal("Error loading .env file")
+	}
+
+	ser := server.NewServer()
+	http.HandleFunc("GET /title", ser.SearchBookHandler)
+
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+        log.Fatal("Error starting server:", err)
     }
 
-	query := "Dresden Files"
-	client := api.NewClient()
-
-	bookResp, err := client.SearchBook(query)
-	if err != nil {
-		fmt.Printf("Error %v", err)
-	}
-
-	for i := 0; i < 10 ; i++{
-		fmt.Printf("Title %s\n", bookResp.Items[i].VolumeInfo.Title)
-	}
-	
 }
