@@ -6,28 +6,22 @@ import (
 	"net/http"
 )
 
-
-func (s *Server) SearchBookHandler(w http.ResponseWriter, r *http.Request){
-	title := r.URL.Query()["title"]
+func (s *Server) SearchBookHandler(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Query().Get("title")
 	query := fmt.Sprint(title)
 
 	books, err := s.client.SearchBook(query)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"error": "server err"})
+		http.Error(w, `{"error": "server err"}`, http.StatusInternalServerError)
 		return
 	}
 
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 
 	data, err := json.Marshal(books)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]string{"error": "server err"})
+		http.Error(w, `{"error": "server err"}`, http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(200)
 	w.Write(data)
 }
