@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	if err := godotenv.Load(); err != nil {
 		log.Fatal("Error loading .env file")
 	}
@@ -16,9 +17,11 @@ func main() {
 	ser := server.NewServer()
 	http.HandleFunc("GET /title", ser.SearchBookHandler)
 	http.HandleFunc("GET /volumeid/", ser.SearchBookByIDHandler)
+	http.HandleFunc("POST /checkout/", ser.CheckoutHandler)
+	http.HandleFunc("GET /checkout", ser.ListCheckedOutBooksHandler)
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
-        log.Fatal("Error starting server:", err)
-    }
+		log.Fatal("Error starting server:", err)
+	}
 
 }
